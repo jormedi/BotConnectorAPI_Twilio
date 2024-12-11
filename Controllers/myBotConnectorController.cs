@@ -16,6 +16,7 @@ public class BotConnectorController : ControllerBase
     private static string? s_endConversationMessage;
     private static BotService? s_botService;
     public static IDictionary<string, string> s_tokens = new Dictionary<string, string>();
+    public static IDictionary<string, (string Token, string ConversationId)> s_conversations = new Dictionary<string, (string, string)>();
     public BotConnectorController(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -43,51 +44,53 @@ public class BotConnectorController : ControllerBase
     [HttpPost]
     [Route("StartBot")]
     [Consumes("application/x-www-form-urlencoded")]
-    //public async Task<ActionResult> StartBot(HttpContext req)
     public async Task<ActionResult> StartBot([FromForm] string From, [FromForm] string Body)
     {
         Console.WriteLine("From: " + From + ", " + Body);
-        var token = await s_botService.GetTokenAsync();
-        if (!s_tokens.ContainsKey(From)) {
-            s_tokens.Add(From, token);
+        if (!s_conversations.ContainsKey(From)) {
+            var token = await s_botService.GetTokenAsync();
+            var conversationId = await StartConversation(Body, token);
+            s_conversations.Add(From, (token, conversationId));
+        } else {
+            var conversationId = s_conversations[From].ConversationId;
+            await SendMessageToConversation(conversationId, Body, s_conversations[From].Token);
         }
-        Console.WriteLine("s_tokens: " + s_tokens[From]);
-        var response = await StartConversation(Body, s_tokens[From]);
-        
+        var response = await GetBotResponse(s_conversations[From].ConversationId, s_conversations[From].Token);
         return Ok(response);
     }
 
-    //private static async Task<string> StartConversation(string inputMsg)
-    private async Task<string> StartConversation(string inputMsg, string token = "")
+    private async Task<string> StartConversation(string inputMsg, string token)
     {
-        Console.WriteLine("token: " + token);
         using (var directLineClient = new DirectLineClient(token))
         {
             var conversation = await directLineClient.Conversations.StartConversationAsync();
-            var conversationtId = conversation.ConversationId;
-            //string inputMessage;
+            var conversationId = conversation.ConversationId;
+            await SendMessageToConversation(conversationId, inputMsg, token);
+            return conversationId;
+        }
+    }
 
-            Console.WriteLine(conversationtId + ": " + inputMsg);
-            //while (!string.Equals(inputMessage = , s_endConversationMessage, StringComparison.OrdinalIgnoreCase))
-            
-            if (!string.IsNullOrEmpty(inputMsg) && !string.Equals(inputMsg, s_endConversationMessage))
+    private async Task SendMessageToConversation(string conversationId, string inputMsg, string token)
+    {
+        using (var directLineClient = new DirectLineClient(token))
+        {
+            await directLineClient.Conversations.PostActivityAsync(conversationId, new Activity()
             {
-                // Send user message using directlineClient
-                await directLineClient.Conversations.PostActivityAsync(conversationtId, new Activity()
-                {
-                    Type = ActivityTypes.Message,
-                    From = new ChannelAccount { Id = "userId", Name = "userName" },
-                    Text = inputMsg,
-                    TextFormat = "plain",
-                    Locale = "en-Us",
-                });
+                Type = ActivityTypes.Message,
+                From = new ChannelAccount { Id = "userId", Name = "userName" },
+                Text = inputMsg,
+                TextFormat = "plain",
+                Locale = "en-Us",
+            });
+        }
+    }
 
-                // Get bot response using directlinClient
-                List<Activity> responses = await GetBotResponseActivitiesAsync(directLineClient, conversationtId);
-                return BotReplyAsAPIResponse(responses);
-            }
-
-            return "Thank you.";
+    private async Task<string> GetBotResponse(string conversationId, string token)
+    {
+        using (var directLineClient = new DirectLineClient(token))
+        {
+            List<Activity> responses = await GetBotResponseActivitiesAsync(directLineClient, conversationId);
+            return BotReplyAsAPIResponse(responses);
         }
     }
 

@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kogan/git/azure/myBotConnector/myBotConnector.csproj": {}
+    "E:\\TRABAJO\\Chatbot\\Course Registration Specialist\\BotConnectorAPI_Twilio\\myBotConnector.csproj": {}
   },
   "projects": {
-    "/Users/kogan/git/azure/myBotConnector/myBotConnector.csproj": {
+    "E:\\TRABAJO\\Chatbot\\Course Registration Specialist\\BotConnectorAPI_Twilio\\myBotConnector.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kogan/git/azure/myBotConnector/myBotConnector.csproj",
+        "projectUniqueName": "E:\\TRABAJO\\Chatbot\\Course Registration Specialist\\BotConnectorAPI_Twilio\\myBotConnector.csproj",
         "projectName": "myBotConnector",
-        "projectPath": "/Users/kogan/git/azure/myBotConnector/myBotConnector.csproj",
-        "packagesPath": "/Users/kogan/.nuget/packages/",
-        "outputPath": "/Users/kogan/git/azure/myBotConnector/obj/",
+        "projectPath": "E:\\TRABAJO\\Chatbot\\Course Registration Specialist\\BotConnectorAPI_Twilio\\myBotConnector.csproj",
+        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
+        "outputPath": "E:\\TRABAJO\\Chatbot\\Course Registration Specialist\\BotConnectorAPI_Twilio\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/Users/kogan/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -74,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.102/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     }

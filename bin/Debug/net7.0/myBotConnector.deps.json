@@ -44,7 +44,7 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.Bot.Connector.DirectLine.dll": {
             "assemblyVersion": "3.0.2.0",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.0.2.0"
           }
         }
       },
